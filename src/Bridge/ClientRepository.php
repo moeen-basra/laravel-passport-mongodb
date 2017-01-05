@@ -10,14 +10,14 @@ class ClientRepository implements ClientRepositoryInterface
     /**
      * The client model repository.
      *
-     * @var \Laravel\Passport\ClientRepository
+     * @var \MoeenBasra\LaravelPassportMongoDB\ClientRepository
      */
     protected $clients;
 
     /**
      * Create a new repository instance.
      *
-     * @param  \Laravel\Passport\ClientRepository  $clients
+     * @param  \MoeenBasra\LaravelPassportMongoDB\ClientRepository  $clients
      * @return void
      */
     public function __construct(ClientModelRepository $clients)
@@ -58,7 +58,7 @@ class ClientRepository implements ClientRepositoryInterface
     /**
      * Determine if the given client can handle the given grant type.
      *
-     * @param  \Laravel\Passport\Client  $record
+     * @param  \MoeenBasra\LaravelPassportMongoDB\Client  $record
      * @param  string  $grantType
      * @return bool
      */
