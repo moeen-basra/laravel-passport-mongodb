@@ -39,7 +39,7 @@ class TokenRepository
     public function findValidToken($user, $client)
     {
         return $client->tokens()
-                      ->whereUserId($user->id)
+                      ->whereUserId($user->_id)
                       ->whereRevoked(0)
                       ->where('expires_at', '>', Carbon::now())
                       ->latest('expires_at')
