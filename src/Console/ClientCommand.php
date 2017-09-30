@@ -2,9 +2,7 @@
 
 namespace MoeenBasra\LaravelPassportMongoDB\Console;
 
-use DateTime;
 use Illuminate\Console\Command;
-use Illuminate\Support\Facades\DB;
 use MoeenBasra\LaravelPassportMongoDB\ClientRepository;
 use MoeenBasra\LaravelPassportMongoDB\PersonalAccessClient;
 

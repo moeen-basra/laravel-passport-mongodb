@@ -5,38 +5,49 @@ namespace MoeenBasra\LaravelPassportMongoDB\Http\Controllers;
 use Illuminate\Http\Request;
 use Illuminate\Http\Response;
 use MoeenBasra\LaravelPassportMongoDB\Passport;
-use MoeenBasra\LaravelPassportMongoDB\PersonalAccessTokenResult;
+use MoeenBasra\LaravelPassportMongoDB\TokenRepository;
 use Illuminate\Contracts\Validation\Factory as ValidationFactory;
 
 class PersonalAccessTokenController
 {
     /**
+     * The token repository implementation.
+     *
+     * @var \MoeenBasra\LaravelPassportMongoDB\TokenRepository
+     */
+    protected $tokenRepository;
+
+    /**
      * The validation factory implementation.
      *
-     * @var ValidationFactory
+     * @var \Illuminate\Contracts\Validation\Factory
      */
     protected $validation;
 
     /**
      * Create a controller instance.
      *
-     * @param  ValidationFactory  $validation
+     * @param  \MoeenBasra\LaravelPassportMongoDB\TokenRepository  $tokenRepository
+     * @param  \Illuminate\Contracts\Validation\Factory  $validation
      * @return void
      */
-    public function __construct(ValidationFactory $validation)
+    public function __construct(TokenRepository $tokenRepository, ValidationFactory $validation)
     {
         $this->validation = $validation;
+        $this->tokenRepository = $tokenRepository;
     }
 
     /**
      * Get all of the personal access tokens for the authenticated user.
      *
-     * @param  Request  $request
-     * @return Response
+     * @param  \Illuminate\Http\Request  $request
+     * @return \Illuminate\Http\Response
      */
     public function forUser(Request $request)
     {
-        return $request->user()->tokens->load('client')->filter(function ($token) {
+        $tokens = $this->tokenRepository->forUser($request->user()->getKey());
+
+        return $tokens->load('client')->filter(function ($token) {
             return $token->client->personal_access_client && ! $token->revoked;
         })->values();
     }
@@ -44,8 +55,8 @@ class PersonalAccessTokenController
     /**
      * Create a new personal access token for the user.
      *
-     * @param  Request  $request
-     * @return PersonalAccessTokenResult
+     * @param  \Illuminate\Http\Request  $request
+     * @return \MoeenBasra\LaravelPassportMongoDB\PersonalAccessTokenResult
      */
     public function store(Request $request)
     {
@@ -64,11 +75,15 @@ class PersonalAccessTokenController
      *
      * @param  Request  $request
      * @param  string  $tokenId
-     * @return Response
+     * @return \Illuminate\Http\Response
      */
     public function destroy(Request $request, $tokenId)
     {
-        if (is_null($token = $request->user()->tokens->find($tokenId))) {
+        $token = $this->tokenRepository->findForUser(
+            $tokenId, $request->user()->getKey()
+        );
+
+        if (is_null($token)) {
             return new Response('', 404);
         }
 

@@ -8,7 +8,7 @@ class ClientRepository
      * Get a client by the given ID.
      *
      * @param  int  $id
-     * @return Client|null
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client|null
      */
     public function find($id)
     {
@@ -19,7 +19,7 @@ class ClientRepository
      * Get an active client by the given ID.
      *
      * @param  int  $id
-     * @return Client|null
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client|null
      */
     public function findActive($id)
     {
@@ -29,10 +29,24 @@ class ClientRepository
     }
 
     /**
+     * Get a client instance for the given ID and user ID.
+     *
+     * @param  int  $clientId
+     * @param  mixed  $userId
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client|null
+     */
+    public function findForUser($clientId, $userId)
+    {
+        return Client::where('_id', $clientId)
+                     ->where('user_id', $userId)
+                     ->first();
+    }
+
+    /**
      * Get the client instances for the given user ID.
      *
      * @param  mixed  $userId
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Jenssegers\Mongodb\Collection
      */
     public function forUser($userId)
     {
@@ -44,7 +58,7 @@ class ClientRepository
      * Get the active client instances for the given user ID.
      *
      * @param  mixed  $userId
-     * @return \Illuminate\Database\Eloquent\Collection
+     * @return \Jenssegers\Mongodb\Collection
      */
     public function activeForUser($userId)
     {
@@ -56,15 +70,15 @@ class ClientRepository
     /**
      * Get the personal access token client for the application.
      *
-     * @return Client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function personalAccessClient()
     {
         if (Passport::$personalAccessClient) {
-            return Client::find(Passport::$personalAccessClient);
-        } else {
-            return PersonalAccessClient::orderBy('id', 'desc')->first()->client;
+            return $this->find(Passport::$personalAccessClient);
         }
+
+        return PersonalAccessClient::orderBy('_id', 'desc')->first()->client;
     }
 
     /**
@@ -75,7 +89,7 @@ class ClientRepository
      * @param  string  $redirect
      * @param  bool  $personalAccess
      * @param  bool  $password
-     * @return Client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function create($userId, $name, $redirect, $personalAccess = false, $password = false)
     {
@@ -100,7 +114,7 @@ class ClientRepository
      * @param  int  $userId
      * @param  string  $name
      * @param  string  $redirect
-     * @return Client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function createPersonalAccessClient($userId, $name, $redirect)
     {
@@ -113,7 +127,7 @@ class ClientRepository
      * @param  int  $userId
      * @param  string  $name
      * @param  string  $redirect
-     * @return Client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function createPasswordGrantClient($userId, $name, $redirect)
     {
@@ -126,7 +140,7 @@ class ClientRepository
      * @param  Client  $client
      * @param  string  $name
      * @param  string  $redirect
-     * @return Client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function update(Client $client, $name, $redirect)
     {
@@ -140,8 +154,8 @@ class ClientRepository
     /**
      * Regenerate the client secret.
      *
-     * @param  Client  $client
-     * @return Client
+     * @param  \MoeenBasra\LaravelPassportMongoDB\Client  $client
+     * @return \MoeenBasra\LaravelPassportMongoDB\Client
      */
     public function regenerateSecret(Client $client)
     {
@@ -160,14 +174,15 @@ class ClientRepository
      */
     public function revoked($id)
     {
-        return Client::where('id', $id)
-                ->where('revoked', true)->exists();
+        $client = $this->find($id);
+
+        return is_null($client) || $client->revoked;
     }
 
     /**
      * Delete the given client.
      *
-     * @param  Client  $client
+     * @param  \MoeenBasra\LaravelPassportMongoDB\Client  $client
      * @return void
      */
     public function delete(Client $client)

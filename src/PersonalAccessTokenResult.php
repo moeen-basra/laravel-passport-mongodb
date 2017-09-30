@@ -17,7 +17,7 @@ class PersonalAccessTokenResult implements Arrayable, Jsonable
     /**
      * The token model instance.
      *
-     * @var Token
+     * @var \MoeenBasra\LaravelPassportMongoDB\Token
      */
     public $token;
 
@@ -25,7 +25,7 @@ class PersonalAccessTokenResult implements Arrayable, Jsonable
      * Create a new result instance.
      *
      * @param  string  $accessToken
-     * @param  Token  $token
+     * @param  \MoeenBasra\LaravelPassportMongoDB\Token  $token
      * @return void
      */
     public function __construct($accessToken, $token)

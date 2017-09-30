@@ -4,7 +4,6 @@ namespace MoeenBasra\LaravelPassportMongoDB\Guards;
 
 use Exception;
 use Firebase\JWT\JWT;
-use MoeenBasra\LaravelPassportMongoDB\Token;
 use Illuminate\Http\Request;
 use MoeenBasra\LaravelPassportMongoDB\Passport;
 use Illuminate\Container\Container;
@@ -23,46 +22,46 @@ class TokenGuard
     /**
      * The resource server instance.
      *
-     * @var ResourceServer
+     * @var \League\OAuth2\Server\ResourceServer
      */
     protected $server;
 
     /**
      * The user provider implementation.
      *
-     * @var UserProvider
+     * @var \Illuminate\Contracts\Auth\UserProvider
      */
     protected $provider;
 
     /**
      * The token repository instance.
      *
-     * @var TokenRepository
+     * @var \MoeenBasra\LaravelPassportMongoDB\TokenRepository
      */
     protected $tokens;
 
     /**
      * The client repository instance.
      *
-     * @var ClientRepository
+     * @var \MoeenBasra\LaravelPassportMongoDB\ClientRepository
      */
     protected $clients;
 
     /**
      * The encrypter implementation.
      *
-     * @var Encrypter
+     * @var \Illuminate\Contracts\Encryption\Encrypter
      */
     protected $encrypter;
 
     /**
      * Create a new token guard instance.
      *
-     * @param  ResourceServer  $server
-     * @param  UserProvider  $provider
-     * @param  TokenRepository  $tokens
-     * @param  ClientRepository  $clients
-     * @param  Encrypter  $encrypter
+     * @param  \League\OAuth2\Server\ResourceServer  $server
+     * @param  \Illuminate\Contracts\Auth\UserProvider  $provider
+     * @param  \MoeenBasra\LaravelPassportMongoDB\TokenRepository  $tokens
+     * @param  \MoeenBasra\LaravelPassportMongoDB\ClientRepository  $clients
+     * @param  \Illuminate\Contracts\Encryption\Encrypter  $encrypter
      * @return void
      */
     public function __construct(ResourceServer $server,
@@ -81,6 +80,7 @@ class TokenGuard
     /**
      * Get the user for the incoming request.
      *
+     * @param  \Illuminate\Http\Request  $request
      * @param  Request  $request
      * @return mixed
      */
@@ -96,7 +96,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the Bearer token.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     protected function authenticateViaBearerToken($request)
@@ -112,11 +112,11 @@ class TokenGuard
             // If the access token is valid we will retrieve the user according to the user ID
             // associated with the token. We will use the provider implementation which may
             // be used to retrieve users from Eloquent. Next, we'll be ready to continue.
-            if (! $userId = $psr->getAttribute('oauth_user_id')) {
-                return;
-            }
+            $user = $this->provider->retrieveById(
+                $psr->getAttribute('oauth_user_id')
+            );
 
-            if (! $user = $this->provider->retrieveById($userId)) {
+            if (! $user) {
                 return;
             }
 
@@ -147,7 +147,7 @@ class TokenGuard
     /**
      * Authenticate the incoming request via the token cookie.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return mixed
      */
     protected function authenticateViaCookie($request)
@@ -180,7 +180,7 @@ class TokenGuard
     /**
      * Decode and decrypt the JWT token cookie.
      *
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return array
      */
     protected function decodeJwtTokenCookie($request)
@@ -195,7 +195,7 @@ class TokenGuard
      * Determine if the CSRF / header are valid and match.
      *
      * @param  array  $token
-     * @param  Request  $request
+     * @param  \Illuminate\Http\Request  $request
      * @return bool
      */
     protected function validCsrf($token, $request)

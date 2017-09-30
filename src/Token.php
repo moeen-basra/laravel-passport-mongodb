@@ -56,7 +56,7 @@ class Token extends Model
     /**
      * Get the client that the token belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Jenssegers\Mongodb\Eloquent\Relations\BelongsTo
      */
     public function client()
     {
@@ -66,11 +66,13 @@ class Token extends Model
     /**
      * Get the user that the token belongs to.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\BelongsTo
+     * @return \Jenssegers\Mongodb\Eloquent\Relations\BelongsTo
      */
     public function user()
     {
-        return $this->belongsTo(config('auth.providers.users.model'));
+        $provider = config('auth.guards.api.provider');
+
+        return $this->belongsTo(config('auth.providers.'.$provider.'.model'));
     }
 
     /**

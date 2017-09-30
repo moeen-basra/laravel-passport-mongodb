@@ -41,10 +41,10 @@ class AuthCode extends Model
     /**
      * Get the client that owns the authentication code.
      *
-     * @return \Illuminate\Database\Eloquent\Relations\HasMany
+     * @return \Jenssegers\Mongodb\Relations\BelongsTo
      */
     public function client()
     {
-        return $this->hasMany(Client::class);
+        return $this->belongTo(Client::class);
     }
 }
