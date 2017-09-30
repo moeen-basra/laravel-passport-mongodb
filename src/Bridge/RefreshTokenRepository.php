@@ -20,7 +20,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
     /**
      * The database connection.
      *
-     * @var \Jenssegers\Mongodb\Connection
+     * @var \Illuminate\Database\Connection
      */
     protected $database;
 
@@ -35,7 +35,7 @@ class RefreshTokenRepository implements RefreshTokenRepositoryInterface
      * Create a new repository instance.
      *
      * @param  \MoeenBasra\LaravelPassportMongoDB\Bridge\AccessTokenRepository  $tokens
-     * @param  \Jenssegers\Mongodb\Connection  $database
+     * @param  \Illuminate\Database\Connection  $database
      * @param  \Illuminate\Contracts\Events\Dispatcher  $events
      * @return void
      */
