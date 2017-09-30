@@ -2,7 +2,7 @@
 
 namespace MoeenBasra\LaravelPassportMongoDB\Bridge;
 
-use Illuminate\Database\Connection;
+use Jenssegers\Mongodb\Connection;
 use League\OAuth2\Server\Entities\AuthCodeEntityInterface;
 use League\OAuth2\Server\Repositories\AuthCodeRepositoryInterface;
 
@@ -13,14 +13,14 @@ class AuthCodeRepository implements AuthCodeRepositoryInterface
     /**
      * The database connection.
      *
-     * @var \Illuminate\Database\Connection
+     * @var \Jenssegers\Mongodb\Connection
      */
     protected $database;
 
     /**
      * Create a new repository instance.
      *
-     * @param  \Illuminate\Database\Connection  $database
+     * @param  \Jenssegers\Mongodb\Connection  $database
      * @return void
      */
     public function __construct(Connection $database)
