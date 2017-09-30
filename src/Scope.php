@@ -42,7 +42,7 @@ class Scope implements Arrayable, Jsonable
     public function toArray()
     {
         return [
-            'id' => $this->id,
+            '_id' => $this->id,
             'description' => $this->description,
         ];
     }
