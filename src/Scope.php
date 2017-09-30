@@ -30,7 +30,7 @@ class Scope implements Arrayable, Jsonable
      */
     public function __construct($id, $description)
     {
-        $this->id = $id;
+        $this->_id = $id;
         $this->description = $description;
     }
 
@@ -42,7 +42,7 @@ class Scope implements Arrayable, Jsonable
     public function toArray()
     {
         return [
-            '_id' => $this->id,
+            '_id' => $this->_id,
             'description' => $this->description,
         ];
     }

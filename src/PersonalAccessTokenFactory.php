@@ -95,7 +95,7 @@ class PersonalAccessTokenFactory
     {
         return (new ServerRequest)->withParsedBody([
             'grant_type' => 'personal_access',
-            'client_id' => $client->id,
+            'client_id' => $client->_id,
             'client_secret' => $client->secret,
             'user_id' => $userId,
             'scope' => implode(' ', $scopes),
