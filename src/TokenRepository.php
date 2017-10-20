@@ -26,7 +26,7 @@ class TokenRepository
      */
     public function find($id)
     {
-        return Token::find($id);
+        return Token::where('id', $id)->first();
     }
 
     /**
